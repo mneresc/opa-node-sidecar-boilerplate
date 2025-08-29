@@ -1,7 +1,7 @@
 // policy-tests/run.js
 const path = require("node:path");
 const fs = require("node:fs");
-const { evaluate, reload } = require("../api/src/services/policyEngine");
+const { evaluate, reload } = require("../services/policyEngine");
 
 function loadJson(p) {
   return JSON.parse(fs.readFileSync(p, "utf-8"));

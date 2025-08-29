@@ -1,0 +1,34 @@
+{
+  "cases": [
+    {
+      "name": "OK — dentro do N2 com aprovador_n2",
+      "headers": { "X-Tenant-Id": "TENANT_A", "X-User-Id": "u-42", "X-Channel": "WEB" },
+      "body": {
+        "action": "aprovar_saque",
+        "subject": { "id": "u-42", "roles": ["aprovador_n2"] },
+        "resource": { "tipo": "saque", "id": "s-1", "valor": 1200 }
+      },
+      "expect": { "allow": true, "violations": [] }
+    },
+    {
+      "name": "NEGADO — canal não permitido",
+      "headers": { "X-Tenant-Id": "TENANT_A", "X-User-Id": "u-42", "X-Channel": "APP" },
+      "body": {
+        "action": "aprovar_saque",
+        "subject": { "id": "u-42", "roles": ["aprovador_n2"] },
+        "resource": { "tipo": "saque", "id": "s-2", "valor": 500 }
+      },
+      "expect": { "allow": false, "violations": ["Canal não permitido para o tenant."] }
+    },
+    {
+      "name": "NEGADO — valor > N2 exige aprovador_n3",
+      "headers": { "X-Tenant-Id": "TENANT_A", "X-User-Id": "u-43", "X-Channel": "WEB" },
+      "body": {
+        "action": "aprovar_saque",
+        "subject": { "id": "u-43", "roles": ["aprovador_n2"] },
+        "resource": { "tipo": "saque", "id": "s-3", "valor": 2000 }
+      },
+      "expect": { "allow": false, "violations": ["Valor acima do N2 requer papel 'aprovador_n3'."] }
+    }
+  ]
+}
