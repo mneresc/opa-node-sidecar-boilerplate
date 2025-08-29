@@ -1,0 +1,14 @@
+{
+  "tenants": {
+    "TENANT_A": {
+      "limites": { "n1": 500, "n2": 1500 },
+      "canais_permitidos": ["WEB", "API"],
+      "rules": ["canal_nao_permitido", "req_nivel_n2", "req_nivel_n3"]
+    },
+    "TENANT_B": {
+      "limites": { "n1": 300, "n2": 800 },
+      "canais_permitidos": ["APP"],
+      "rules": ["canal_nao_permitido", "req_nivel_n2", "req_nivel_n3"]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "rules": [
+    {
+      "id": "canal_nao_permitido",
+      "type": "deny",
+      "message": "Canal não permitido para o tenant.",
+      "applies": { "==": [ { "var": "resource.tipo" }, "saque" ] },
+      "logic": { "!in": [ { "var": "context.channel" }, { "var": "tenantConfig.canais_permitidos" } ] }
+    },
+    {
+      "id": "req_nivel_n2",
+      "type": "deny",
+      "message": "Valor acima do N1 requer papel 'aprovador_n2'.",
+      "applies": { "==": [ { "var": "resource.tipo" }, "saque" ] },
+      "logic": {
+        "and": [
+          { ">": [ { "var": "resource.valor" }, { "var": "tenantConfig.limites.n1" } ] },
+          { "<=": [ { "var": "resource.valor" }, { "var": "tenantConfig.limites.n2" } ] },
+          { "!in": [ "aprovador_n2", { "var": "subject.roles" } ] }
+        ]
+      }
+    },
+    {
+      "id": "req_nivel_n3",
+      "type": "deny",
+      "message": "Valor acima do N2 requer papel 'aprovador_n3'.",
+      "applies": { "==": [ { "var": "resource.tipo" }, "saque" ] },
+      "logic": {
+        "and": [
+          { ">": [ { "var": "resource.valor" }, { "var": "tenantConfig.limites.n2" } ] },
+          { "!in": [ "aprovador_n3", { "var": "subject.roles" } ] }
+        ]
+      }
+    }
+  ]
+}
