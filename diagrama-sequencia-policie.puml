@@ -1,0 +1,49 @@
+@startuml
+title OPA Sidecar + Node — Fluxo de decisão (PEP / PDP / PIP)
+autonumber
+
+actor Cliente
+participant "Node API\n(PEP)" as PEP
+database "PostgreSQL\n(PIP)" as PIP
+participant "OPA\n(PDP)" as PDP
+collections "data/*.json\n(config por tenant)" as DATA
+
+== Boot / preload ==
+DATA --> PDP : Carrega/atualiza dados versionáveis\n(limites, canais, etc.)
+
+== Requisição ==
+Cliente -> PEP : HTTP request (headers: X-Tenant-Id, X-User-Id, X-Channel)
+activate PEP
+note right of PEP
+  Coleta contexto (usuário, canal, recurso),
+  gera requestId e prepara input-base
+end note
+
+PEP -> PIP : Consultar dados do domínio\n(ex.: saque, papéis/roles, valores)
+activate PIP
+PIP --> PEP : Retorna dados (valor, roles, etc.)
+deactivate PIP
+
+PEP -> PDP : POST http://opa:8181/v1/data/saques/allow\nbody: input JSON (tenant, action, subject, resource, context, config)
+activate PDP
+note over PDP
+  Avaliação Rego (PDP)
+  - políticas *.rego
+  - entrypoint: allow / reason / obligations
+  - usa input + DATA
+end note
+PDP -> PDP : Avaliar política (Rego)
+
+alt allow == true
+  PDP --> PEP : decision {allow: true, reason, obligations}
+  deactivate PDP
+  PEP -> PEP : Aplicar decisão (enforcement)\n(efetivar ação, log/auditoria)
+  PEP --> Cliente : 200 OK (ação permitida)
+  deactivate PEP
+else allow == false
+  PDP --> PEP : decision {allow: false, reason}
+  deactivate PDP
+  PEP --> Cliente : 403 Forbidden (ação negada)\nbody: reason
+  deactivate PEP
+end
+@enduml

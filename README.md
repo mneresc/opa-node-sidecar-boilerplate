@@ -1,4 +1,4 @@
-# Manual para Desenvolvedores — OPA Sidecar + Node (cloud-agnostic)
+# OPA Sidecar + Node (cloud-agnostic)
 
 Boilerplate que demonstra **Open Policy Agent (OPA)** como **sidecar** de um microserviço **Node.js** (Express), aplicando **políticas Rego**, **configuração por tenant** em `data/config.json` e **PostgreSQL** como PIP (Policy Information Point) para dados de exemplo.
 
@@ -32,18 +32,15 @@ Boilerplate que demonstra **Open Policy Agent (OPA)** como **sidecar** de um mic
 - **PDP (Policy Decision Point)**: OPA avalia **políticas Rego** com base no **input** enviado pelo PEP + dados versionáveis (`data/`) e retorna **allow/deny** e metadados.  
 - **PIP (Policy Information Point)**: Postgres fornece dados do domínio consultados pelo Node para compor o input.
 
+![Fluxo OPA](./out/diagrama-sequencia-policie/diagrama-sequencia-policie.svg)
+
 > **Por que sidecar?** Mantém políticas desacopladas do código, facilita versionamento/distribuição e permite evoluir regras sem redeploy do app.
 
 ---
 
 ## 2) Arquitetura
 
-```
-[Cliente] -> [Node (PEP)] -> [OPA (PDP)]
-                    |            ^
-                    v            |
-               [Postgres]  <-  [data/*.json]
-```
+![Arquitetura](./out/arquitetura/arquitetura.svg)
 
 - O Node **não expõe** o OPA; comunica via `http://opa:8181` (rede interna do Compose).
 - Em produção (ECS/K8s), rode o OPA **na mesma task/pod** do serviço.
