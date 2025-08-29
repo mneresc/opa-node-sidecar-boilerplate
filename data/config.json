@@ -1,0 +1,14 @@
+{
+  "version": "2025-08-11",
+  "tenants": {
+    "TENANT_A": {
+      "requiredApprovals": 2
+    },
+    "TENANT_B": {
+      "requiredApprovals": 3
+    },
+    "TENANT_C": {
+      "requiredApprovals": 2
+    }
+  }
+}
