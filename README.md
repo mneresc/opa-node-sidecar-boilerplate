@@ -1,4 +1,4 @@
-# Manual para Desenvolvedores — OPA Sidecar + Node (cloud-agnostic)
+OPA Sidecar + Node (cloud-agnostic)
 
 Boilerplate que demonstra **Open Policy Agent (OPA)** como **sidecar** de um microserviço **Node.js** (Express), aplicando **políticas Rego**, **configuração por tenant** em `data/config.json` e **PostgreSQL** como PIP (Policy Information Point) para dados de exemplo.
 
