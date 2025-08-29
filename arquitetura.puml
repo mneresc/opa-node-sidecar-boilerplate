@@ -1,0 +1,29 @@
+@startuml
+title Arquitetura — Componentes (PEP / PDP / PIP)
+
+skinparam componentStyle rectangle
+skinparam wrapWidth 200
+skinparam maxMessageSize 200
+
+actor "Cliente" as Client
+
+component "Node API\n<<PEP>>" as PEP
+component "OPA\n<<PDP>>" as PDP
+database  "PostgreSQL\n<<PIP>>" as PIP
+folder    "Policies & Config\n(data/*.json | bundles)" as DATA
+
+Client --> PEP : HTTP (REST)
+PEP --> PDP   : Decisão (REST)\n/v1/data/...
+PEP ..> PIP   : Consultas de domínio\nSQL/ORM
+PDP ..> DATA  : Carrega/atualiza\n(Rego data)
+
+note right of PEP
+  - Coleta contexto (tenant, usuário, canal, recurso)
+  - Monta input e aplica enforcement
+end note
+
+note right of PDP
+  - Avalia políticas Rego
+  - Retorna allow/deny + reason/obligations
+end note
+@enduml
